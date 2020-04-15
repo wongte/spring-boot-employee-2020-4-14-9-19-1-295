@@ -57,4 +57,9 @@ public class CompanyInfoManager {
         employeeCompanyMap.remove(employeeID);
         employees.removeIf(employee -> employee.getId() == employeeID);
     }
+
+    public void removeAllEmployeeInCompany(int companyID) {
+        List<Employee> allEmployeeInCompany = findAllEmployeeInCompany(companyID);
+        allEmployeeInCompany.forEach(employee -> deleteEmployee(employee.getId()));
+    }
 }

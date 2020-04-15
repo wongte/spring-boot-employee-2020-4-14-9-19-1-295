@@ -64,9 +64,8 @@ public class CompanyController {
 
     @DeleteMapping("/{targetCompanyID}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void delete(@PathVariable int targetCompanyID) {
-        List<Company> companies = companyInfoManager.getCompanies();
-        companies.removeIf(company -> company.getCompanyID() == targetCompanyID);
+    public void removeAllEmployee(@PathVariable int targetCompanyID) {
+        companyInfoManager.removeAllEmployeeInCompany(targetCompanyID);
     }
 
     @PutMapping("/{targetCompanyID}")
