@@ -44,6 +44,14 @@ public class EmployeeController {
         return pagedEmployees;
     }
 
+    @GetMapping("/{employeeID}")
+    public Employee getEmployeeById(@PathVariable int employeeID) {
+        return employees.stream()
+                .filter(employee -> employeeID == employee.getId())
+                .findAny()
+                .orElse(null);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Employee create(@RequestBody Employee newEmployee) {
