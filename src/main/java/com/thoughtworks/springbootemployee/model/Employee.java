@@ -1,10 +1,14 @@
 package com.thoughtworks.springbootemployee.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class Employee {
+    @JsonIgnore
     private int companyID;
     private int id;
     private String name;
     private int age;
+    private int salary;
     private String gender;
 
     public Employee(int id, String name, int age, String gender) {
@@ -57,5 +61,13 @@ public class Employee {
 
     public String getGender() {
         return gender;
+    }
+
+    public int getSalary() {
+        return salary;
+    }
+
+    public void setSalary(int salary) {
+        this.salary = salary;
     }
 }
