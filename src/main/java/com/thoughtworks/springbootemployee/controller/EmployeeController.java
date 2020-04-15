@@ -32,4 +32,10 @@ public class EmployeeController {
         employees.add(newEmployee);
         return newEmployee;
     }
+
+    @DeleteMapping("/{targetEmployeeID}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void delete(@PathVariable Integer targetEmployeeID) {
+        employees.removeIf(employee -> employee.getId() == targetEmployeeID);
+    }
 }
