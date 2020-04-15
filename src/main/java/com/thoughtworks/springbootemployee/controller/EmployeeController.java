@@ -38,4 +38,14 @@ public class EmployeeController {
     public void delete(@PathVariable Integer targetEmployeeID) {
         employees.removeIf(employee -> employee.getId() == targetEmployeeID);
     }
+
+    @PutMapping("/{targetEmployeeID}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void update(@PathVariable Integer targetEmployeeID, @RequestBody Employee updatedEmployee) {
+        for (int index = 0; index < employees.size(); index++) {
+            if (employees.get(index).getId() == targetEmployeeID) {
+                employees.set(index, updatedEmployee);
+            }
+        }
+    }
 }
