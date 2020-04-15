@@ -1,10 +1,10 @@
 package com.thoughtworks.springbootemployee.controller;
 
+import com.thoughtworks.springbootemployee.CompanyInfoManager;
 import com.thoughtworks.springbootemployee.model.Employee;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -12,15 +12,10 @@ import java.util.stream.IntStream;
 @RestController
 @RequestMapping("employees")
 public class EmployeeController {
-    private List<Employee> employees;
+    CompanyInfoManager companyInfoManager;
 
     public EmployeeController() {
-        employees = new ArrayList<>();
-        employees.add(new Employee(0, "Xiaoming", 20, "Male"));
-        employees.add(new Employee(1, "Xiaohong", 19, "Female"));
-        employees.add(new Employee(2, "Xiaozhi", 15, "Male"));
-        employees.add(new Employee(3, "Xiaogang", 16, "Male"));
-        employees.add(new Employee(4, "Xiaoxia", 15, "Female"));
+        companyInfoManager = CompanyInfoManager.getInstance();
     }
 
     @GetMapping
@@ -29,6 +24,7 @@ public class EmployeeController {
             @RequestParam(required = false) Integer pageSize,
             @RequestParam(required = false) String gender
     ) {
+        List<Employee> employees = companyInfoManager.getEmployees();
         if (page == null) page = 1;
         if (pageSize == null) pageSize = employees.size();
 
@@ -40,7 +36,7 @@ public class EmployeeController {
         }
 
         List<Employee> pagedEmployees = IntStream.range(startIndex, endIndex + 1).boxed()
-                .map(index -> employees.get(index))
+                .map(employees::get)
                 .collect(Collectors.toList());
 
         if (gender != null) {
@@ -53,6 +49,7 @@ public class EmployeeController {
 
     @GetMapping("/{employeeID}")
     public Employee getEmployeeById(@PathVariable int employeeID) {
+        List<Employee> employees = companyInfoManager.getEmployees();
         return employees.stream()
                 .filter(employee -> employeeID == employee.getId())
                 .findAny()
@@ -62,23 +59,21 @@ public class EmployeeController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Employee create(@RequestBody Employee newEmployee) {
-        employees.add(newEmployee);
+        companyInfoManager.addEmployee(newEmployee);
         return newEmployee;
     }
 
     @DeleteMapping("/{targetEmployeeID}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void delete(@PathVariable Integer targetEmployeeID) {
-        employees.removeIf(employee -> employee.getId() == targetEmployeeID);
+        companyInfoManager.deleteEmployee(targetEmployeeID);
     }
 
     @PutMapping("/{targetEmployeeID}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void update(@PathVariable Integer targetEmployeeID, @RequestBody Employee updatedEmployee) {
-        for (int index = 0; index < employees.size(); index++) {
-            if (employees.get(index).getId() == targetEmployeeID) {
-                employees.set(index, updatedEmployee);
-            }
-        }
+        List<Employee> employees = companyInfoManager.getEmployees();
+        int index = employees.indexOf(updatedEmployee);
+        employees.set(index, updatedEmployee);
     }
 }

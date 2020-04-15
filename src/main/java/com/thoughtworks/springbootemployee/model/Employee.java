@@ -1,6 +1,7 @@
 package com.thoughtworks.springbootemployee.model;
 
 public class Employee {
+    private int companyID;
     private int id;
     private String name;
     private int age;
@@ -11,6 +12,19 @@ public class Employee {
         this.name = name;
         this.age = age;
         this.gender = gender;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return getId() == ((Employee)obj).getId();
+    }
+
+    public int getCompanyID() {
+        return companyID;
+    }
+
+    public void setCompanyID(int companyID) {
+        this.companyID = companyID;
     }
 
     public void setId(int id) {

@@ -1,23 +1,22 @@
 package com.thoughtworks.springbootemployee.controller;
 
+import com.thoughtworks.springbootemployee.CompanyInfoManager;
 import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.Employee;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @RestController
 @RequestMapping("/companies")
 public class CompanyController {
-    private List<Company> companies;
+    CompanyInfoManager companyInfoManager;
 
     public CompanyController() {
-        companies = new ArrayList<>();
+        companyInfoManager = CompanyInfoManager.getInstance();
     }
 
     @GetMapping
@@ -25,6 +24,7 @@ public class CompanyController {
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer pageSize
     ) {
+        List<Company> companies = companyInfoManager.getCompanies();
         if (page == null) page = 1;
         if (pageSize == null) pageSize = companies.size();
 
@@ -36,12 +36,13 @@ public class CompanyController {
         }
 
         return IntStream.range(startIndex, endIndex + 1).boxed()
-                .map(index -> companies.get(index))
+                .map(companies::get)
                 .collect(Collectors.toList());
     }
 
     @GetMapping("/{companyID}")
     public Company getCompanyByID(@PathVariable int companyID) {
+        List<Company> companies = companyInfoManager.getCompanies();
         return companies.stream()
                 .filter(company -> company.getCompanyID() == companyID)
                 .findAny()
@@ -50,16 +51,13 @@ public class CompanyController {
 
     @GetMapping("/{companyID}/employees")
     public List<Employee> getCompanyEmployees(@PathVariable int companyID) {
-        Optional<Company> targetCompany = companies.stream()
-                .filter(company -> company.getCompanyID() == companyID)
-                .findAny();
-
-        return targetCompany.map(Company::getEmployees).orElse(null);
+        return companyInfoManager.findAllEmployeeInCompany(companyID);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Company create(@RequestBody Company newCompany) {
+        List<Company> companies = companyInfoManager.getCompanies();
         companies.add(newCompany);
         return newCompany;
     }
@@ -67,12 +65,14 @@ public class CompanyController {
     @DeleteMapping("/{targetCompanyID}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void delete(@PathVariable int targetCompanyID) {
+        List<Company> companies = companyInfoManager.getCompanies();
         companies.removeIf(company -> company.getCompanyID() == targetCompanyID);
     }
 
     @PutMapping("/{targetCompanyID}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void update(@PathVariable Integer targetCompanyID, @RequestBody Company updatedCompany) {
+        List<Company> companies = companyInfoManager.getCompanies();
         for (int index = 0; index < companies.size(); index++) {
             if (companies.get(index).getCompanyID() == targetCompanyID) {
                 companies.set(index, updatedCompany);
