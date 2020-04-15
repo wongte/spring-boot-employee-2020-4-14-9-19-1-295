@@ -49,11 +49,7 @@ public class EmployeeController {
 
     @GetMapping("/{employeeID}")
     public Employee getEmployeeById(@PathVariable int employeeID) {
-        List<Employee> employees = companyInfoManager.getEmployees();
-        return employees.stream()
-                .filter(employee -> employeeID == employee.getId())
-                .findAny()
-                .orElse(null);
+        return companyInfoManager.findEmployeeByID(employeeID);
     }
 
     @PostMapping
