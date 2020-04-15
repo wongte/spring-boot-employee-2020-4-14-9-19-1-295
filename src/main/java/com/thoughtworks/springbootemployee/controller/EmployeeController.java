@@ -26,14 +26,22 @@ public class EmployeeController {
     @GetMapping
     public List<Employee> getEmployees(
             @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Integer pageSize
+            @RequestParam(required = false) Integer pageSize,
+            @RequestParam(required = false) String gender
     ) {
         if (page == null) page = 1;
         if (pageSize == null) pageSize = employees.size();
 
-        return IntStream.range(page - 1, page - 1 + pageSize).boxed()
+        List<Employee> pagedEmployees = IntStream.range(page - 1, page - 1 + pageSize).boxed()
                 .map(index -> employees.get(index))
                 .collect(Collectors.toList());
+
+        if (gender != null) {
+            pagedEmployees = pagedEmployees.stream()
+                    .filter(employee -> employee.getGender().equals(gender))
+                    .collect(Collectors.toList());
+        }
+        return pagedEmployees;
     }
 
     @PostMapping
