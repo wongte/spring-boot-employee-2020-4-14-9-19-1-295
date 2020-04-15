@@ -32,7 +32,14 @@ public class EmployeeController {
         if (page == null) page = 1;
         if (pageSize == null) pageSize = employees.size();
 
-        List<Employee> pagedEmployees = IntStream.range(page - 1, page - 1 + pageSize).boxed()
+        int startIndex = (page - 1) * pageSize;
+        int endIndex = page * pageSize - 1;
+
+        if (endIndex >= employees.size()) {
+            return null;
+        }
+
+        List<Employee> pagedEmployees = IntStream.range(startIndex, endIndex + 1).boxed()
                 .map(index -> employees.get(index))
                 .collect(Collectors.toList());
 
