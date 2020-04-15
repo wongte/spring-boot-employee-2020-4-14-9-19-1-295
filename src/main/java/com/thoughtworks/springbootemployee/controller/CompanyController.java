@@ -42,11 +42,7 @@ public class CompanyController {
 
     @GetMapping("/{companyID}")
     public Company getCompanyByID(@PathVariable int companyID) {
-        List<Company> companies = companyInfoManager.getCompanies();
-        return companies.stream()
-                .filter(company -> company.getCompanyID() == companyID)
-                .findAny()
-                .orElse(null);
+        return companyInfoManager.findCompanyByID(companyID);
     }
 
     @GetMapping("/{companyID}/employees")

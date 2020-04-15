@@ -37,10 +37,10 @@ public class CompanyInfoManager {
     public void addEmployee(Employee newEmployee) {
         employeeCompanyMap.put(newEmployee.getId(), newEmployee.getCompanyID());
         employees.add(newEmployee);
-    }
-    public void deleteEmployee(Employee employee) {
-        employeeCompanyMap.remove(employee.getId());
-        employees.remove(employee);
+        Company company = findCompanyByID(newEmployee.getCompanyID());
+        System.out.println(company);
+        System.out.println(newEmployee.getCompanyID());
+        company.incrementEmployeeNumber();
     }
 
     public List<Employee> findAllEmployeeInCompany(int targetCompanyID) {
@@ -54,12 +54,29 @@ public class CompanyInfoManager {
     }
 
     public void deleteEmployee(int employeeID) {
+        Employee employee = findEmployeeByID(employeeID);
+        employees.remove(employee);
+
+        Company company = findCompanyByID(employee.getCompanyID());
         employeeCompanyMap.remove(employeeID);
-        employees.removeIf(employee -> employee.getId() == employeeID);
+        company.decrementEmployeeNumber();
     }
 
     public void removeAllEmployeeInCompany(int companyID) {
         List<Employee> allEmployeeInCompany = findAllEmployeeInCompany(companyID);
         allEmployeeInCompany.forEach(employee -> deleteEmployee(employee.getId()));
+    }
+
+    public Company findCompanyByID(int companyID) {
+        return companies.stream()
+                .filter(company -> company.getCompanyID() == companyID)
+                .findAny()
+                .orElse(null);
+    }
+    public Employee findEmployeeByID(int employeeID) {
+        return employees.stream()
+                .filter(employee -> employee.getId() == employeeID)
+                .findAny()
+                .orElse(null);
     }
 }

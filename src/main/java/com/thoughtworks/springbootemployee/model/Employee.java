@@ -3,7 +3,6 @@ package com.thoughtworks.springbootemployee.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class Employee {
-    @JsonIgnore
     private int companyID;
     private int id;
     private String name;
