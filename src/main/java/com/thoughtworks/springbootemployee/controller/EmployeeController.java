@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @RestController
 @RequestMapping("employees")
@@ -22,8 +24,16 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public List<Employee> getAllEmployees() {
-        return employees;
+    public List<Employee> getEmployees(
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer pageSize
+    ) {
+        if (page == null) page = 1;
+        if (pageSize == null) pageSize = employees.size();
+
+        return IntStream.range(page - 1, page - 1 + pageSize).boxed()
+                .map(index -> employees.get(index))
+                .collect(Collectors.toList());
     }
 
     @PostMapping
