@@ -42,8 +42,7 @@ public class CompanyController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Company create(@RequestBody Company newCompany) {
-        List<Company> companies = companyInfoManager.getCompanies();
-        companies.add(newCompany);
+        companyInfoManager.addCompany(newCompany);
         return newCompany;
     }
 
