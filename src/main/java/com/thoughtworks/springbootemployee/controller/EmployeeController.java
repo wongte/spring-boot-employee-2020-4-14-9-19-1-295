@@ -32,7 +32,7 @@ public class EmployeeController {
         int endIndex = page * pageSize - 1;
 
         if (endIndex >= employees.size()) {
-            return null;
+            endIndex = employees.size() - 1;
         }
 
         List<Employee> pagedEmployees = IntStream.range(startIndex, endIndex + 1).boxed()
