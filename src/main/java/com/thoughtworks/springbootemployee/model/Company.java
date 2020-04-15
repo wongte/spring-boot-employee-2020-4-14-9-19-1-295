@@ -5,7 +5,6 @@ import java.util.List;
 public class Company {
     private int companyID;
     private String companyName;
-    private int employeesNumber;
     private List<Employee> employees;
 
     public int getCompanyID() {
@@ -25,11 +24,7 @@ public class Company {
     }
 
     public int getEmployeesNumber() {
-        return employeesNumber;
-    }
-
-    public void setEmployeesNumber(int employeesNumber) {
-        this.employeesNumber = employeesNumber;
+        return employees.size();
     }
 
     public List<Employee> getEmployees() {
