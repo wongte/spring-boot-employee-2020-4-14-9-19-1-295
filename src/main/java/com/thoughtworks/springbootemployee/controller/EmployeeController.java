@@ -1,6 +1,7 @@
 package com.thoughtworks.springbootemployee.controller;
 
 import com.thoughtworks.springbootemployee.CompanyInfoManager;
+import com.thoughtworks.springbootemployee.ListUtility;
 import com.thoughtworks.springbootemployee.model.Employee;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -25,26 +26,7 @@ public class EmployeeController {
             @RequestParam(required = false) String gender
     ) {
         List<Employee> employees = companyInfoManager.getEmployees();
-        if (page == null) page = 1;
-        if (pageSize == null) pageSize = employees.size();
-
-        int startIndex = (page - 1) * pageSize;
-        int endIndex = page * pageSize - 1;
-
-        if (endIndex >= employees.size()) {
-            endIndex = employees.size() - 1;
-        }
-
-        List<Employee> pagedEmployees = IntStream.range(startIndex, endIndex + 1).boxed()
-                .map(employees::get)
-                .collect(Collectors.toList());
-
-        if (gender != null) {
-            pagedEmployees = pagedEmployees.stream()
-                    .filter(employee -> employee.getGender().equals(gender))
-                    .collect(Collectors.toList());
-        }
-        return pagedEmployees;
+        return new ListUtility<Employee>().getListByPage(employees, page, pageSize);
     }
 
     @GetMapping("/{employeeID}")

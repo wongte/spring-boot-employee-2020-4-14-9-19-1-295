@@ -1,6 +1,7 @@
 package com.thoughtworks.springbootemployee.controller;
 
 import com.thoughtworks.springbootemployee.CompanyInfoManager;
+import com.thoughtworks.springbootemployee.ListUtility;
 import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.Employee;
 import org.springframework.http.HttpStatus;
@@ -25,19 +26,7 @@ public class CompanyController {
             @RequestParam(required = false) Integer pageSize
     ) {
         List<Company> companies = companyInfoManager.getCompanies();
-        if (page == null) page = 1;
-        if (pageSize == null) pageSize = companies.size();
-
-        int startIndex = (page - 1) * pageSize;
-        int endIndex = page * pageSize - 1;
-
-        if (endIndex >= companies.size()) {
-            return null;
-        }
-
-        return IntStream.range(startIndex, endIndex + 1).boxed()
-                .map(companies::get)
-                .collect(Collectors.toList());
+        return new ListUtility<Company>().getListByPage(companies, page, pageSize);
     }
 
     @GetMapping("/{companyID}")
