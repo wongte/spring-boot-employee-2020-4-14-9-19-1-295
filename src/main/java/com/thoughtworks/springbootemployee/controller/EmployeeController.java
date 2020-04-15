@@ -50,8 +50,7 @@ public class EmployeeController {
     @PutMapping("/{targetEmployeeID}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void update(@PathVariable Integer targetEmployeeID, @RequestBody Employee updatedEmployee) {
-        List<Employee> employees = companyInfoManager.getEmployees();
-        int index = employees.indexOf(updatedEmployee);
-        employees.set(index, updatedEmployee);
+        updatedEmployee.setId(targetEmployeeID);
+        companyInfoManager.updateEmployee(updatedEmployee);
     }
 }

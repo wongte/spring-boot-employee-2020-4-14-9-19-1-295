@@ -56,11 +56,7 @@ public class CompanyController {
     @PutMapping("/{targetCompanyID}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void update(@PathVariable Integer targetCompanyID, @RequestBody Company updatedCompany) {
-        List<Company> companies = companyInfoManager.getCompanies();
-        for (int index = 0; index < companies.size(); index++) {
-            if (companies.get(index).getCompanyID() == targetCompanyID) {
-                companies.set(index, updatedCompany);
-            }
-        }
+        updatedCompany.setCompanyID(targetCompanyID);
+        companyInfoManager.updateCompany(updatedCompany);
     }
 }

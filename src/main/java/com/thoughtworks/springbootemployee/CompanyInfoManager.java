@@ -73,10 +73,25 @@ public class CompanyInfoManager {
                 .findAny()
                 .orElse(null);
     }
+
     public Employee findEmployeeByID(int employeeID) {
         return employees.stream()
                 .filter(employee -> employee.getId() == employeeID)
                 .findAny()
                 .orElse(null);
+    }
+
+    public void updateEmployee(Employee updatedEmployee) {
+        int index = employees.indexOf(updatedEmployee);
+        employees.set(index, updatedEmployee);
+        employeeCompanyMap.put(updatedEmployee.getId(), updatedEmployee.getCompanyID());
+    }
+
+    public void updateCompany(Company updatedCompany) {
+        for (int index = 0; index < companies.size(); index++) {
+            if (companies.get(index).getCompanyID() == updatedCompany.getCompanyID()) {
+                companies.set(index, updatedCompany);
+            }
+        }
     }
 }
