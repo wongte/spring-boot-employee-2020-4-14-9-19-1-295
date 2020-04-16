@@ -1,8 +1,8 @@
 package com.thoughtworks.springbootemployee.controller;
 
 import com.thoughtworks.springbootemployee.CompanyInformationManager;
-import com.thoughtworks.springbootemployee.ListUtility;
 import com.thoughtworks.springbootemployee.model.Company;
+import com.thoughtworks.springbootemployee.model.CompanyResponse;
 import com.thoughtworks.springbootemployee.model.Employee;
 import com.thoughtworks.springbootemployee.service.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/companies")
@@ -24,18 +25,18 @@ public class CompanyController {
     }
 
     @GetMapping(params = {"page", "pageSize"})
-    public List<Company> getCompaniesWithPaging(@RequestParam Integer page, @RequestParam Integer pageSize) {
-        return companyService.getCompaniesWithPaging(page, pageSize);
+    public List<CompanyResponse> getCompaniesWithPaging(@RequestParam Integer page, @RequestParam Integer pageSize) {
+        return companyService.getCompaniesWithPaging(page, pageSize).stream().map(CompanyResponse::new).collect(Collectors.toList());
     }
 
     @GetMapping
-    public List<Company> getCompanies() {
-        return companyService.getCompanies();
+    public List<CompanyResponse> getCompanies() {
+        return companyService.getCompanies().stream().map(CompanyResponse::new).collect(Collectors.toList());
     }
 
     @GetMapping("/{companyID}")
-    public Company getCompanyByID(@PathVariable int companyID) {
-        return companyService.getCompanyByID(companyID);
+    public CompanyResponse getCompanyByID(@PathVariable int companyID) {
+        return new CompanyResponse(companyService.getCompanyByID(companyID));
     }
 
     @GetMapping("/{companyID}/employees")
@@ -45,8 +46,8 @@ public class CompanyController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Company create(@RequestBody Company newCompany) {
-        return companyService.create(newCompany);
+    public CompanyResponse create(@RequestBody Company newCompany) {
+        return new CompanyResponse(companyService.create(newCompany));
     }
 
     @DeleteMapping("/{targetCompanyID}")
@@ -57,7 +58,7 @@ public class CompanyController {
 
     @PutMapping("/{targetCompanyID}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public Company update(@PathVariable Integer targetCompanyID, @RequestBody Company updatedCompany) {
-        return companyService.update(targetCompanyID, updatedCompany);
+    public CompanyResponse update(@PathVariable Integer targetCompanyID, @RequestBody Company updatedCompany) {
+        return new CompanyResponse(companyService.update(targetCompanyID, updatedCompany));
     }
 }

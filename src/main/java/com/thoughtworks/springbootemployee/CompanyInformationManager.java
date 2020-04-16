@@ -3,17 +3,12 @@ package com.thoughtworks.springbootemployee;
 import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.Employee;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CompanyInformationManager {
     private static CompanyInformationManager instance;
     private List<Company> companies = new ArrayList<>();
-    private List<Employee> employees = new ArrayList<>();
-    Map<Integer, Integer> employeeCompanyMap = new HashMap<>();
 
     public static CompanyInformationManager getInstance() {
         if (instance == null) {
@@ -24,8 +19,6 @@ public class CompanyInformationManager {
 
     public void reset() {
         companies = new ArrayList<>();
-        employees = new ArrayList<>();
-        employeeCompanyMap = new HashMap<>();
     }
 
     public void addCompany(Company company) {
@@ -37,33 +30,22 @@ public class CompanyInformationManager {
     }
 
     public List<Employee> getEmployees() {
-        return employees;
+        return companies.stream().map(Company::getEmployees).flatMap(Collection::stream).collect(Collectors.toList());
     }
 
     public void addEmployee(Employee newEmployee) {
-        employeeCompanyMap.put(newEmployee.getId(), newEmployee.getCompanyID());
-        employees.add(newEmployee);
-        Company company = findCompanyByID(newEmployee.getCompanyID());
-        company.incrementEmployeeNumber();
+        Company targetCompany = findCompanyByID(newEmployee.getCompanyID());
+        targetCompany.getEmployees().add(newEmployee);
     }
 
     public List<Employee> findAllEmployeeInCompany(int targetCompanyID) {
-        ArrayList<Integer> employeeIDInCompany = new ArrayList<>();
-        employeeCompanyMap.forEach((employeeID, companyID) -> {
-            if (companyID == targetCompanyID) {
-                employeeIDInCompany.add(employeeID);
-            }
-        });
-        return employees.stream().filter(employee -> employeeIDInCompany.contains(employee.getId())).collect(Collectors.toList());
+        return findCompanyByID(targetCompanyID).getEmployees();
     }
 
     public void deleteEmployee(int employeeID) {
-        Employee employee = findEmployeeByID(employeeID);
-        employees.remove(employee);
-
-        Company company = findCompanyByID(employee.getCompanyID());
-        employeeCompanyMap.remove(employeeID);
-        company.decrementEmployeeNumber();
+        Employee firedEmployee = findEmployeeByID(employeeID);
+        Company company = findCompanyByID(firedEmployee.getCompanyID());
+        company.getEmployees().removeIf(employee -> employee.getId() == employeeID);
     }
 
     public Company findCompanyByID(int companyID) {
@@ -74,15 +56,19 @@ public class CompanyInformationManager {
     }
 
     public Employee findEmployeeByID(int employeeID) {
-        return employees.stream()
+        return getEmployees().stream()
                 .filter(employee -> employee.getId() == employeeID)
                 .findAny()
                 .orElse(null);
     }
 
     public void updateEmployee(Employee updatedEmployee) {
-        int index = employees.indexOf(updatedEmployee);
-        employees.set(index, updatedEmployee);
-        employeeCompanyMap.put(updatedEmployee.getId(), updatedEmployee.getCompanyID());
+        Optional<Employee> targetEmployeeOptional = getEmployees().stream().filter(employee -> employee.getId() == updatedEmployee.getId()).findAny();
+        if (!targetEmployeeOptional.isPresent()) return;
+        Employee employee = targetEmployeeOptional.get();
+        employee.setAge(updatedEmployee.getAge());
+        employee.setGender(updatedEmployee.getGender());
+        employee.setName(updatedEmployee.getName());
+        employee.setSalary(updatedEmployee.getSalary());
     }
 }

@@ -2,6 +2,7 @@ package com.thoughtworks.springbootemployee;
 
 import com.thoughtworks.springbootemployee.controller.CompanyController;
 import com.thoughtworks.springbootemployee.model.Company;
+import com.thoughtworks.springbootemployee.model.CompanyResponse;
 import com.thoughtworks.springbootemployee.model.Employee;
 import io.restassured.http.ContentType;
 import io.restassured.mapper.TypeRef;
@@ -60,7 +61,7 @@ public class CompanyControllerTest {
                 .get(COMPANIES_URL);
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
 
-        List<Company> companies = response.getBody().as(new TypeRef<List<Company>>() {
+        List<CompanyResponse> companies = response.getBody().as(new TypeRef<List<CompanyResponse>>() {
             @Override
             public Type getType() {
                 return super.getType();
@@ -79,7 +80,7 @@ public class CompanyControllerTest {
                 .get(COMPANIES_URL);
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
 
-        List<Company> companies = response.getBody().as(new TypeRef<List<Company>>() {
+        List<CompanyResponse> companies = response.getBody().as(new TypeRef<List<CompanyResponse>>() {
             @Override
             public Type getType() {
                 return super.getType();
@@ -96,7 +97,7 @@ public class CompanyControllerTest {
                 .when()
                 .get(COMPANIES_URL + "/" + 1);
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
-        Company resultCompany = response.getBody().as(Company.class);
+        CompanyResponse resultCompany = response.getBody().as(CompanyResponse.class);
         Assert.assertEquals("Company 1", resultCompany.getCompanyName());
     }
 
@@ -128,7 +129,7 @@ public class CompanyControllerTest {
                 .post(COMPANIES_URL);
 
         Assert.assertEquals(HttpStatus.CREATED, response.statusCode());
-        Company resultCompany = response.getBody().as(Company.class);
+        CompanyResponse resultCompany = response.getBody().as(CompanyResponse.class);
         Assert.assertEquals(newCompany.getCompanyName(), resultCompany.getCompanyName());
     }
 
@@ -144,7 +145,7 @@ public class CompanyControllerTest {
                 .put(COMPANIES_URL + "/" + updatedCompany1.getCompanyID());
 
         Assert.assertEquals(HttpStatus.ACCEPTED, response.statusCode());
-        Company resultCompany = response.getBody().as(Company.class);
+        CompanyResponse resultCompany = response.getBody().as(CompanyResponse.class);
         Assert.assertEquals(newCompany1Name, resultCompany.getCompanyName());
     }
 
