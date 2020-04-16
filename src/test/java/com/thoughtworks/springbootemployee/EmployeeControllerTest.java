@@ -152,7 +152,6 @@ public class EmployeeControllerTest {
                 .delete(EMPLOYEES_URL + "/" + firedEmployeeID);
 
         Assert.assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
-        Assert.assertNull(CompanyInformationManager.getInstance().findEmployeeByID(firedEmployeeID));
     }
 
 }

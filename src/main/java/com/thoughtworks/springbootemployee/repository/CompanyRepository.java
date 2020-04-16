@@ -20,7 +20,11 @@ public class CompanyRepository {
     }
 
     public Company findByID(int companyID) {
-        return CompanyInformationManager.getInstance().findCompanyByID(companyID);
+        List<Company> allCompanies = CompanyInformationManager.getInstance().getCompanies();
+        return allCompanies.stream()
+                .filter(company -> company.getCompanyID() == companyID)
+                .findAny()
+                .orElse(null);
     }
 
     public Company add(Company newCompany) {
@@ -33,8 +37,12 @@ public class CompanyRepository {
     }
 
     public Company update(Integer targetCompanyID, Company updatedCompany) {
-        updatedCompany.setCompanyID(targetCompanyID);
-        CompanyInformationManager.getInstance().updateCompany(updatedCompany);
+        List<Company> companies = CompanyInformationManager.getInstance().getCompanies();
+        for (int index = 0; index < companies.size(); index++) {
+            if (companies.get(index).getCompanyID() == targetCompanyID) {
+                companies.set(index, updatedCompany);
+            }
+        }
         return updatedCompany;
     }
 

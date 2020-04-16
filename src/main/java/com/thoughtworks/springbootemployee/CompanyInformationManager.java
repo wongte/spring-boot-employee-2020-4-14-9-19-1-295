@@ -40,10 +40,6 @@ public class CompanyInformationManager {
         return employees;
     }
 
-    public List<Employee> getEmployeesByGender(String gender) {
-        return employees.stream().filter(employee -> employee.getGender().equals(gender)).collect(Collectors.toList());
-    }
-
     public void addEmployee(Employee newEmployee) {
         employeeCompanyMap.put(newEmployee.getId(), newEmployee.getCompanyID());
         employees.add(newEmployee);
@@ -70,11 +66,6 @@ public class CompanyInformationManager {
         company.decrementEmployeeNumber();
     }
 
-    public void removeAllEmployeeInCompany(int companyID) {
-        List<Employee> allEmployeeInCompany = findAllEmployeeInCompany(companyID);
-        allEmployeeInCompany.forEach(employee -> deleteEmployee(employee.getId()));
-    }
-
     public Company findCompanyByID(int companyID) {
         return companies.stream()
                 .filter(company -> company.getCompanyID() == companyID)
@@ -93,13 +84,5 @@ public class CompanyInformationManager {
         int index = employees.indexOf(updatedEmployee);
         employees.set(index, updatedEmployee);
         employeeCompanyMap.put(updatedEmployee.getId(), updatedEmployee.getCompanyID());
-    }
-
-    public void updateCompany(Company updatedCompany) {
-        for (int index = 0; index < companies.size(); index++) {
-            if (companies.get(index).getCompanyID() == updatedCompany.getCompanyID()) {
-                companies.set(index, updatedCompany);
-            }
-        }
     }
 }

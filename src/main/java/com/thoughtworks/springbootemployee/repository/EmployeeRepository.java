@@ -6,6 +6,7 @@ import com.thoughtworks.springbootemployee.model.Employee;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class EmployeeRepository {
@@ -14,7 +15,8 @@ public class EmployeeRepository {
     }
 
     public List<Employee> findByGender(String gender) {
-        return CompanyInformationManager.getInstance().getEmployeesByGender(gender);
+        List<Employee> allEmployees = CompanyInformationManager.getInstance().getEmployees();
+        return allEmployees.stream().filter(employee -> employee.getGender().equals(gender)).collect(Collectors.toList());
     }
 
     public List<Employee> findAll(Integer page, Integer pageSize) {
@@ -23,7 +25,11 @@ public class EmployeeRepository {
     }
 
     public Employee findByID(int employeeID) {
-        return CompanyInformationManager.getInstance().findEmployeeByID(employeeID);
+        List<Employee> allEmployees = CompanyInformationManager.getInstance().getEmployees();
+        return allEmployees.stream()
+                .filter(employee -> employee.getId() == employeeID)
+                .findAny()
+                .orElse(null);
     }
 
     public Employee add(Employee employee) {
