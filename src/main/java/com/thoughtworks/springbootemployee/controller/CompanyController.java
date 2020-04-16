@@ -54,8 +54,9 @@ public class CompanyController {
 
     @PutMapping("/{targetCompanyID}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void update(@PathVariable Integer targetCompanyID, @RequestBody Company updatedCompany) {
+    public Company update(@PathVariable Integer targetCompanyID, @RequestBody Company updatedCompany) {
         updatedCompany.setCompanyID(targetCompanyID);
         companyInformationManager.updateCompany(updatedCompany);
+        return updatedCompany;
     }
 }
