@@ -22,6 +22,12 @@ public class CompanyInformationManager {
         return instance;
     }
 
+    public void reset() {
+        companies = new ArrayList<>();
+        employees = new ArrayList<>();
+        employeeCompanyMap = new HashMap<>();
+    }
+
     public void addCompany(Company company) {
         companies.add(company);
     }

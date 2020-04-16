@@ -53,8 +53,9 @@ public class EmployeeController {
 
     @PutMapping("/{targetEmployeeID}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void update(@PathVariable Integer targetEmployeeID, @RequestBody Employee updatedEmployee) {
+    public Employee update(@PathVariable Integer targetEmployeeID, @RequestBody Employee updatedEmployee) {
         updatedEmployee.setId(targetEmployeeID);
         companyInformationManager.updateEmployee(updatedEmployee);
+        return updatedEmployee;
     }
 }

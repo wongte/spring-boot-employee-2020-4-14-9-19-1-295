@@ -15,6 +15,9 @@ public class Employee {
         this.gender = gender;
     }
 
+    public Employee() {
+    }
+
     @Override
     public boolean equals(Object obj) {
         return getId() == ((Employee)obj).getId();
