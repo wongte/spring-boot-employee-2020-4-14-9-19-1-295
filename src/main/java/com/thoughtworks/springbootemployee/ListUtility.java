@@ -1,7 +1,5 @@
 package com.thoughtworks.springbootemployee;
 
-import com.thoughtworks.springbootemployee.model.Company;
-
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
