@@ -18,9 +18,7 @@ public class EmployeeController {
     }
 
     @GetMapping(params = {"gender"})
-    public List<Employee> getEmployees(
-            @RequestParam(required = false) String gender
-    ) {
+    public List<Employee> getEmployees(@RequestParam String gender) {
         return companyInformationManager.getEmployeesByGender(gender);
     }
 
