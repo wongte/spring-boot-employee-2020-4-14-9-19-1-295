@@ -154,5 +154,8 @@ public class CompanyControllerTest {
                 .when()
                 .delete(COMPANIES_URL + "/" + 1);
         Assert.assertEquals(HttpStatus.ACCEPTED, response.statusCode());
+
+        List<Employee> allEmployeeInCompany1 = CompanyInformationManager.getInstance().findAllEmployeeInCompany(1);
+        Assert.assertEquals(0, allEmployeeInCompany1.size());
     }
 }
