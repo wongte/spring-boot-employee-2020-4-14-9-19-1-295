@@ -18,13 +18,15 @@ public class CompanyController {
         companyInformationManager = CompanyInformationManager.getInstance();
     }
 
-    @GetMapping
-    public List<Company> getCompanies(
-            @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Integer pageSize
-    ) {
+    @GetMapping(params = {"page", "pageSize"})
+    public List<Company> getCompaniesWithPaging(@RequestParam Integer page, @RequestParam Integer pageSize) {
         List<Company> companies = companyInformationManager.getCompanies();
         return new ListUtility<Company>().getListByPage(companies, page, pageSize);
+    }
+
+    @GetMapping
+    public List<Company> getCompanies() {
+        return companyInformationManager.getCompanies();
     }
 
     @GetMapping("/{companyID}")
