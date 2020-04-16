@@ -15,7 +15,7 @@ public class CompanyController {
     CompanyInformationManager companyInformationManager;
 
     public CompanyController() {
-        companyInformationManager = companyInformationManager.getInstance();
+        companyInformationManager = CompanyInformationManager.getInstance();
     }
 
     @GetMapping

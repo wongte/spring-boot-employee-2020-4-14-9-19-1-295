@@ -17,14 +17,22 @@ public class EmployeeController {
         companyInformationManager = CompanyInformationManager.getInstance();
     }
 
-    @GetMapping
+    @GetMapping(params = {"gender"})
     public List<Employee> getEmployees(
-            @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Integer pageSize,
             @RequestParam(required = false) String gender
     ) {
+        return companyInformationManager.getEmployeesByGender(gender);
+    }
+
+    @GetMapping(params = {"page", "pageSize"})
+    public List<Employee> getEmployeesWithPaging(@RequestParam Integer page, @RequestParam Integer pageSize) {
         List<Employee> employees = companyInformationManager.getEmployees();
         return new ListUtility<Employee>().getListByPage(employees, page, pageSize);
+    }
+
+    @GetMapping
+    public List<Employee> getAllEmployees() {
+        return companyInformationManager.getEmployees();
     }
 
     @GetMapping("/{employeeID}")

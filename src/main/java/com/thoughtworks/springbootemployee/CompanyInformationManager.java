@@ -34,12 +34,14 @@ public class CompanyInformationManager {
         return employees;
     }
 
+    public List<Employee> getEmployeesByGender(String gender) {
+        return employees.stream().filter(employee -> employee.getGender().equals(gender)).collect(Collectors.toList());
+    }
+
     public void addEmployee(Employee newEmployee) {
         employeeCompanyMap.put(newEmployee.getId(), newEmployee.getCompanyID());
         employees.add(newEmployee);
         Company company = findCompanyByID(newEmployee.getCompanyID());
-        System.out.println(company);
-        System.out.println(newEmployee.getCompanyID());
         company.incrementEmployeeNumber();
     }
 
