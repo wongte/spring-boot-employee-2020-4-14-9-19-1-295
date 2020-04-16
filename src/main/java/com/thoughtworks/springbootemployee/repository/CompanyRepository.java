@@ -28,12 +28,8 @@ public class CompanyRepository {
     }
 
     public Company add(Company newCompany) {
-        CompanyInformationManager.getInstance().addCompany(newCompany);
+        CompanyInformationManager.getInstance().getCompanies().add(newCompany);
         return newCompany;
-    }
-
-    public void removeAllEmployees(int targetCompanyID) {
-        CompanyInformationManager.getInstance().removeAllEmployeeInCompany(targetCompanyID);
     }
 
     public Company update(Integer targetCompanyID, Company updatedCompany) {

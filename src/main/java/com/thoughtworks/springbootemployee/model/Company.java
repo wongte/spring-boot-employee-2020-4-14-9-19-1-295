@@ -36,4 +36,8 @@ public class Company {
     public void decrementEmployeeNumber() {
         employeesNumber--;
     }
+
+    public void setEmployeesNumber(int employeesNumber) {
+        this.employeesNumber = employeesNumber;
+    }
 }
