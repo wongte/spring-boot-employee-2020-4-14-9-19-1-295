@@ -21,6 +21,10 @@ public class EmployeeController {
         companyInformationManager = CompanyInformationManager.getInstance();
     }
 
+    public EmployeeController(EmployeeService employeeService) {
+        this.employeeService = employeeService;
+    }
+
     @GetMapping(params = {"gender"})
     public List<Employee> getEmployees(@RequestParam String gender) {
         return employeeService.getEmployeesByGender(gender);

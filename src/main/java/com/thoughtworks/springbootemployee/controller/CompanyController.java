@@ -24,6 +24,10 @@ public class CompanyController {
         companyInformationManager = CompanyInformationManager.getInstance();
     }
 
+    public CompanyController(CompanyService companyService) {
+        this.companyService = companyService;
+    }
+
     @GetMapping(params = {"page", "pageSize"})
     public List<CompanyResponse> getCompaniesWithPaging(@RequestParam Integer page, @RequestParam Integer pageSize) {
         return companyService.getCompaniesWithPaging(page, pageSize).stream().map(CompanyResponse::new).collect(Collectors.toList());

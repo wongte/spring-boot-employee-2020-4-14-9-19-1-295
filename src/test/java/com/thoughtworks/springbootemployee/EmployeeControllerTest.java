@@ -3,13 +3,17 @@ package com.thoughtworks.springbootemployee;
 import com.thoughtworks.springbootemployee.controller.EmployeeController;
 import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.Employee;
+import com.thoughtworks.springbootemployee.service.EmployeeService;
 import io.restassured.http.ContentType;
 import io.restassured.mapper.TypeRef;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.response.MockMvcResponse;
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.spec.internal.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -25,11 +29,15 @@ import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class EmployeeControllerTest {
-    @Autowired
+
+    @Mock
+    private EmployeeService employeeService;
+
     public EmployeeController employeeController;
 
     private static final String EMPLOYEES_URL = "/employees";
     private TypeRef<List<Employee>> employeeListTypeRef;
+    private Employee employee1, employee2;
 
     @Before
     public void setup() {
@@ -39,14 +47,15 @@ public class EmployeeControllerTest {
                 return super.getType();
             }
         };
+        employeeController = new EmployeeController(employeeService);
         RestAssuredMockMvc.standaloneSetup(employeeController);
 
         CompanyInformationManager manager = CompanyInformationManager.getInstance();
         manager.reset();
 
-        Employee employee1 = new Employee(0, "Alice", 20, "Female");
+        employee1 = new Employee(0, "Alice", 20, "Female");
         employee1.setCompanyID(1);
-        Employee employee2 = new Employee(1, "Bob", 21, "Male");
+        employee2 = new Employee(1, "Bob", 21, "Male");
         employee2.setCompanyID(1);
 
         Company company = new Company();
@@ -59,6 +68,7 @@ public class EmployeeControllerTest {
 
     @Test
     public void test_getEmployees_by_gender() {
+        Mockito.when(employeeService.getEmployeesByGender(Mockito.anyString())).thenReturn(Collections.singletonList(employee2));
         MockMvcResponse response = given().contentType(ContentType.JSON)
                 .param("gender", "Male")
                 .when()
@@ -72,6 +82,8 @@ public class EmployeeControllerTest {
 
     @Test
     public void test_getEmployeesWithPaging_with_page() {
+        Mockito.when(employeeService.getEmployeesWithPaging(Mockito.anyInt(), Mockito.anyInt()))
+                .thenReturn(Collections.singletonList(employee2));
         MockMvcResponse response = given().contentType(ContentType.JSON)
                 .param("page", 2)
                 .param("pageSize", 1)
@@ -87,6 +99,7 @@ public class EmployeeControllerTest {
 
     @Test
     public void test_getAllEmployees_without_page() {
+        Mockito.when(employeeService.getAllEmployees()).thenReturn(Arrays.asList(employee1, employee2));
         MockMvcResponse response = given().contentType(ContentType.JSON)
                 .when()
                 .get(EMPLOYEES_URL);
@@ -102,6 +115,7 @@ public class EmployeeControllerTest {
     @Test
     public void test_getEmployeeById_when_give_id_return_employee() {
         int targetEmployeeID = 1;
+        Mockito.when(employeeService.findEmployeeByID(Mockito.anyInt())).thenReturn(employee2);
         MockMvcResponse response = given().contentType(ContentType.JSON)
                 .when()
                 .get(EMPLOYEES_URL + "/" + targetEmployeeID);
@@ -118,6 +132,7 @@ public class EmployeeControllerTest {
         Employee newEmployee = new Employee(3, "Cindy", 21, "Female");
         newEmployee.setCompanyID(1);
 
+        Mockito.when(employeeService.create(Mockito.any(Employee.class))).thenReturn(newEmployee);
         MockMvcResponse response = given().contentType(ContentType.JSON)
                 .body(newEmployee)
                 .when()
@@ -135,6 +150,7 @@ public class EmployeeControllerTest {
         Employee updatedAlice = new Employee(0, "Alice", 25, "Female");
         updatedAlice.setCompanyID(1);
 
+        Mockito.when(employeeService.update(Mockito.anyInt(), Mockito.any(Employee.class))).thenReturn(updatedAlice);
         MockMvcResponse response = given().contentType(ContentType.JSON)
                 .body(updatedAlice)
                 .when()
