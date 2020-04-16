@@ -1,8 +1,9 @@
 package com.thoughtworks.springbootemployee.controller;
 
 import com.thoughtworks.springbootemployee.CompanyInformationManager;
-import com.thoughtworks.springbootemployee.ListUtility;
 import com.thoughtworks.springbootemployee.model.Employee;
+import com.thoughtworks.springbootemployee.service.EmployeeService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,49 +14,48 @@ import java.util.List;
 public class EmployeeController {
     CompanyInformationManager companyInformationManager;
 
+    @Autowired
+    EmployeeService employeeService;
+
     public EmployeeController() {
         companyInformationManager = CompanyInformationManager.getInstance();
     }
 
     @GetMapping(params = {"gender"})
     public List<Employee> getEmployees(@RequestParam String gender) {
-        return companyInformationManager.getEmployeesByGender(gender);
+        return employeeService.getEmployeesByGender(gender);
     }
 
     @GetMapping(params = {"page", "pageSize"})
     public List<Employee> getEmployeesWithPaging(@RequestParam Integer page, @RequestParam Integer pageSize) {
-        List<Employee> employees = companyInformationManager.getEmployees();
-        return new ListUtility<Employee>().getListByPage(employees, page, pageSize);
+        return employeeService.getEmployeesWithPaging(page, pageSize);
     }
 
     @GetMapping
     public List<Employee> getAllEmployees() {
-        return companyInformationManager.getEmployees();
+        return employeeService.getAllEmployees();
     }
 
     @GetMapping("/{employeeID}")
     public Employee getEmployeeById(@PathVariable int employeeID) {
-        return companyInformationManager.findEmployeeByID(employeeID);
+        return employeeService.findEmployeeByID(employeeID);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Employee create(@RequestBody Employee newEmployee) {
-        companyInformationManager.addEmployee(newEmployee);
-        return newEmployee;
+        return employeeService.create(newEmployee);
     }
 
     @DeleteMapping("/{targetEmployeeID}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void delete(@PathVariable Integer targetEmployeeID) {
-        companyInformationManager.deleteEmployee(targetEmployeeID);
+        employeeService.delete(targetEmployeeID);
     }
 
     @PutMapping("/{targetEmployeeID}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public Employee update(@PathVariable Integer targetEmployeeID, @RequestBody Employee updatedEmployee) {
-        updatedEmployee.setId(targetEmployeeID);
-        companyInformationManager.updateEmployee(updatedEmployee);
-        return updatedEmployee;
+        return employeeService.update(targetEmployeeID, updatedEmployee);
     }
 }
