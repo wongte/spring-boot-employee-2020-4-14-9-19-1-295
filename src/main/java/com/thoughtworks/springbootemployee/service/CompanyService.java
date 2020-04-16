@@ -42,6 +42,9 @@ public class CompanyService {
     }
 
     public Company update(Integer targetCompanyID, Company updatedCompany) {
-        return companyRepository.update(targetCompanyID, updatedCompany);
+        Company company = companyRepository.findByID(targetCompanyID);
+        company.setCompanyName(updatedCompany.getCompanyName());
+
+        return companyRepository.update(targetCompanyID, company);
     }
 }

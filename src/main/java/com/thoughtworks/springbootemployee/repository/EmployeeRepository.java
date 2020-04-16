@@ -2,10 +2,12 @@ package com.thoughtworks.springbootemployee.repository;
 
 import com.thoughtworks.springbootemployee.CompanyInformationManager;
 import com.thoughtworks.springbootemployee.ListUtility;
+import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.Employee;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
@@ -33,17 +35,28 @@ public class EmployeeRepository {
     }
 
     public Employee add(Employee employee) {
-        CompanyInformationManager.getInstance().addEmployee(employee);
+        Company targetCompany = CompanyInformationManager.getInstance().findCompanyByID(employee.getCompanyID());
+        targetCompany.getEmployees().add(employee);
         return employee;
     }
 
     public void delete(Integer targetEmployeeID) {
-        CompanyInformationManager.getInstance().deleteEmployee(targetEmployeeID);
+        Employee firedEmployee = this.findByID(targetEmployeeID);
+        Company company = CompanyInformationManager.getInstance().findCompanyByID(firedEmployee.getCompanyID());
+        company.getEmployees().removeIf(employee -> employee.getId() == targetEmployeeID);
     }
 
     public Employee update(Integer targetEmployeeID, Employee updatedEmployee) {
-        updatedEmployee.setId(targetEmployeeID);
-        CompanyInformationManager.getInstance().updateEmployee(updatedEmployee);
-        return updatedEmployee;
+        List<Employee> allEmployees = CompanyInformationManager.getInstance().getEmployees();
+        Optional<Employee> targetEmployeeOptional = allEmployees.stream().filter(employee -> employee.getId() == targetEmployeeID).findAny();
+
+        if (!targetEmployeeOptional.isPresent()) return null;
+
+        Employee employee = targetEmployeeOptional.get();
+        employee.setAge(updatedEmployee.getAge());
+        employee.setGender(updatedEmployee.getGender());
+        employee.setName(updatedEmployee.getName());
+        employee.setSalary(updatedEmployee.getSalary());
+        return employee;
     }
 }

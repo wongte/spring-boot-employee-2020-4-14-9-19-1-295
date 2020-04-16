@@ -15,6 +15,9 @@ import org.springframework.cloud.contract.spec.internal.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
@@ -40,17 +43,18 @@ public class EmployeeControllerTest {
 
         CompanyInformationManager manager = CompanyInformationManager.getInstance();
         manager.reset();
-        Company company = new Company();
-        company.setCompanyID(1);
-        company.setCompanyName("Apple");
-        manager.addCompany(company);
 
         Employee employee1 = new Employee(0, "Alice", 20, "Female");
         employee1.setCompanyID(1);
         Employee employee2 = new Employee(1, "Bob", 21, "Male");
         employee2.setCompanyID(1);
-        manager.addEmployee(employee1);
-        manager.addEmployee(employee2);
+
+        Company company = new Company();
+        company.setCompanyID(1);
+        company.setCompanyName("Apple");
+        company.setEmployees(new ArrayList<>(Arrays.asList(employee1, employee2)));
+
+        manager.setCompanies(Collections.singletonList(company));
     }
 
     @Test

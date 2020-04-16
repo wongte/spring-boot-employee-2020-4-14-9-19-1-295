@@ -7,6 +7,8 @@ import com.thoughtworks.springbootemployee.model.Employee;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.IntStream;
 
 @Repository
 public class CompanyRepository {
@@ -34,15 +36,17 @@ public class CompanyRepository {
 
     public Company update(Integer targetCompanyID, Company updatedCompany) {
         List<Company> companies = CompanyInformationManager.getInstance().getCompanies();
-        for (int index = 0; index < companies.size(); index++) {
-            if (companies.get(index).getCompanyID() == targetCompanyID) {
-                companies.set(index, updatedCompany);
-            }
-        }
+        Optional<Integer> targetIndex = IntStream.range(0, companies.size())
+                .boxed()
+                .filter(index -> companies.get(index).getCompanyID() == targetCompanyID).findAny();
+
+        if (!targetIndex.isPresent()) return null;
+
+        companies.set(targetIndex.get(), updatedCompany);
         return updatedCompany;
     }
 
     public List<Employee> findEmployees(int companyID) {
-        return CompanyInformationManager.getInstance().findAllEmployeeInCompany(companyID);
+        return this.findByID(companyID).getEmployees();
     }
 }

@@ -18,6 +18,9 @@ import org.springframework.cloud.contract.spec.internal.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
@@ -36,22 +39,23 @@ public class CompanyControllerTest {
 
         CompanyInformationManager manager = CompanyInformationManager.getInstance();
         manager.reset();
-        Company company1 = new Company();
-        company1.setCompanyID(1);
-        company1.setCompanyName("Company 1");
-        manager.addCompany(company1);
-
-        Company company2 = new Company();
-        company2.setCompanyID(2);
-        company2.setCompanyName("Company 2");
-        manager.addCompany(company2);
 
         Employee employee1 = new Employee(0, "Alice", 20, "Female");
         employee1.setCompanyID(1);
         Employee employee2 = new Employee(1, "Bob", 21, "Male");
         employee2.setCompanyID(2);
-        manager.addEmployee(employee1);
-        manager.addEmployee(employee2);
+
+        Company company1 = new Company();
+        company1.setCompanyID(1);
+        company1.setCompanyName("Company 1");
+        company1.setEmployees(Collections.singletonList(employee1));
+
+        Company company2 = new Company();
+        company2.setCompanyID(2);
+        company2.setCompanyName("Company 2");
+        company2.setEmployees(Collections.singletonList(employee2));
+
+        manager.setCompanies(new ArrayList<>(Arrays.asList(company1, company2)));
     }
 
     @Test
@@ -156,7 +160,7 @@ public class CompanyControllerTest {
                 .delete(COMPANIES_URL + "/" + 1);
         Assert.assertEquals(HttpStatus.ACCEPTED, response.statusCode());
 
-        List<Employee> allEmployeeInCompany1 = CompanyInformationManager.getInstance().findAllEmployeeInCompany(1);
+        List<Employee> allEmployeeInCompany1 = CompanyInformationManager.getInstance().findCompanyByID(1).getEmployees();
         Assert.assertEquals(0, allEmployeeInCompany1.size());
     }
 }
