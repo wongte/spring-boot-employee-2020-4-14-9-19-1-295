@@ -14,7 +14,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.spec.internal.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -30,9 +32,10 @@ import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 @SpringBootTest
 public class EmployeeControllerTest {
 
-    @Mock
+    @MockBean
     private EmployeeService employeeService;
 
+    @Autowired
     public EmployeeController employeeController;
 
     private static final String EMPLOYEES_URL = "/employees";
@@ -47,7 +50,6 @@ public class EmployeeControllerTest {
                 return super.getType();
             }
         };
-        employeeController = new EmployeeController(employeeService);
         RestAssuredMockMvc.standaloneSetup(employeeController);
 
         CompanyInformationManager manager = CompanyInformationManager.getInstance();

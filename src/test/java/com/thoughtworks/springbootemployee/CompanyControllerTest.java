@@ -13,9 +13,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.spec.internal.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -33,16 +34,16 @@ public class CompanyControllerTest {
 
     private static final String COMPANIES_URL = "companies";
 
-    @Mock
-    CompanyService companyService;
+    @MockBean
+    private CompanyService companyService;
 
-    CompanyController companyController;
+    @Autowired
+    private CompanyController companyController;
 
-    List<Company> defaultCompanies;
+    private List<Company> defaultCompanies;
 
     @Before
     public void setUp() {
-        companyController = new CompanyController(companyService);
         RestAssuredMockMvc.standaloneSetup(companyController);
 
         CompanyInformationManager manager = CompanyInformationManager.getInstance();
