@@ -1,6 +1,6 @@
 package com.thoughtworks.springbootemployee.controller;
 
-import com.thoughtworks.springbootemployee.companyInformationManager;
+import com.thoughtworks.springbootemployee.CompanyInformationManager;
 import com.thoughtworks.springbootemployee.ListUtility;
 import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.Employee;
@@ -12,7 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/companies")
 public class CompanyController {
-    companyInformationManager companyInformationManager;
+    CompanyInformationManager companyInformationManager;
 
     public CompanyController() {
         companyInformationManager = companyInformationManager.getInstance();

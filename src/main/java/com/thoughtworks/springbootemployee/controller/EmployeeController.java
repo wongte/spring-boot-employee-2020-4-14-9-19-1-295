@@ -1,6 +1,6 @@
 package com.thoughtworks.springbootemployee.controller;
 
-import com.thoughtworks.springbootemployee.companyInformationManager;
+import com.thoughtworks.springbootemployee.CompanyInformationManager;
 import com.thoughtworks.springbootemployee.ListUtility;
 import com.thoughtworks.springbootemployee.model.Employee;
 import org.springframework.http.HttpStatus;
@@ -11,10 +11,10 @@ import java.util.List;
 @RestController
 @RequestMapping("employees")
 public class EmployeeController {
-    companyInformationManager companyInformationManager;
+    CompanyInformationManager companyInformationManager;
 
     public EmployeeController() {
-        companyInformationManager = companyInformationManager.getInstance();
+        companyInformationManager = CompanyInformationManager.getInstance();
     }
 
     @GetMapping

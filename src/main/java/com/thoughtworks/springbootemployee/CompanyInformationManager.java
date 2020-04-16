@@ -9,15 +9,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class companyInformationManager {
-    private static companyInformationManager instance;
+public class CompanyInformationManager {
+    private static CompanyInformationManager instance;
     private List<Company> companies = new ArrayList<>();
     private List<Employee> employees = new ArrayList<>();
     Map<Integer, Integer> employeeCompanyMap = new HashMap<>();
 
-    public static companyInformationManager getInstance() {
+    public static CompanyInformationManager getInstance() {
         if (instance == null) {
-            instance = new companyInformationManager();
+            instance = new CompanyInformationManager();
         }
         return instance;
     }
