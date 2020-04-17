@@ -1,6 +1,5 @@
 package com.thoughtworks.springbootemployee.controller;
 
-import com.thoughtworks.springbootemployee.CompanyInformationManager;
 import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.CompanyResponse;
 import com.thoughtworks.springbootemployee.model.Employee;
@@ -17,12 +16,6 @@ import java.util.stream.Collectors;
 public class CompanyController {
     @Autowired
     CompanyService companyService;
-
-    CompanyInformationManager companyInformationManager;
-
-    public CompanyController() {
-        companyInformationManager = CompanyInformationManager.getInstance();
-    }
 
     @GetMapping(params = {"page", "pageSize"})
     public List<CompanyResponse> getCompaniesWithPaging(@RequestParam Integer page, @RequestParam Integer pageSize) {

@@ -1,6 +1,5 @@
 package com.thoughtworks.springbootemployee.controller;
 
-import com.thoughtworks.springbootemployee.CompanyInformationManager;
 import com.thoughtworks.springbootemployee.model.Employee;
 import com.thoughtworks.springbootemployee.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,14 +11,8 @@ import java.util.List;
 @RestController
 @RequestMapping("employees")
 public class EmployeeController {
-    CompanyInformationManager companyInformationManager;
-
     @Autowired
     EmployeeService employeeService;
-
-    public EmployeeController() {
-        companyInformationManager = CompanyInformationManager.getInstance();
-    }
 
     @GetMapping(params = {"gender"})
     public List<Employee> getEmployees(@RequestParam String gender) {
