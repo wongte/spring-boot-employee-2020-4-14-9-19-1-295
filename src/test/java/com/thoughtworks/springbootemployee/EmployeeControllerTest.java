@@ -114,7 +114,7 @@ public class EmployeeControllerTest {
     @Test
     public void test_getEmployeeById_when_give_id_return_employee() {
         int targetEmployeeID = 1;
-        Mockito.when(employeeService.findEmployeeByID(Mockito.anyInt())).thenReturn(employee2);
+        Mockito.when(employeeService.findEmployeeByID(Mockito.any(Integer.class))).thenReturn(employee2);
         MockMvcResponse response = given().contentType(ContentType.JSON)
                 .when()
                 .get(EMPLOYEES_URL + "/" + targetEmployeeID);
@@ -122,7 +122,7 @@ public class EmployeeControllerTest {
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
 
         Employee resultEmployee = response.getBody().as(Employee.class);
-        Assert.assertEquals(targetEmployeeID, resultEmployee.getId());
+        Assert.assertEquals(targetEmployeeID, resultEmployee.getId().intValue());
         Assert.assertEquals("Bob", resultEmployee.getName());
     }
 
