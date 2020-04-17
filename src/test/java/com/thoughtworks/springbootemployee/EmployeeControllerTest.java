@@ -3,7 +3,7 @@ package com.thoughtworks.springbootemployee;
 import com.thoughtworks.springbootemployee.controller.EmployeeController;
 import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.Employee;
-import com.thoughtworks.springbootemployee.service.EmployeeService;
+import com.thoughtworks.springbootemployee.repository.EmployeeRepository;
 import io.restassured.http.ContentType;
 import io.restassured.mapper.TypeRef;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
@@ -17,13 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.spec.internal.HttpStatus;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 
@@ -32,7 +31,7 @@ import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 public class EmployeeControllerTest {
 
     @MockBean
-    private EmployeeService employeeService;
+    private EmployeeRepository employeeRepository;
 
     @Autowired
     public EmployeeController employeeController;
@@ -67,7 +66,7 @@ public class EmployeeControllerTest {
 
     @Test
     public void test_getEmployees_by_gender() {
-        Mockito.when(employeeService.getEmployeesByGender(Mockito.anyString())).thenReturn(Collections.singletonList(employee2));
+        Mockito.when(employeeRepository.findAllByGender(Mockito.anyString())).thenReturn(Collections.singletonList(employee2));
         MockMvcResponse response = given().contentType(ContentType.JSON)
                 .param("gender", "Male")
                 .when()
@@ -81,8 +80,8 @@ public class EmployeeControllerTest {
 
     @Test
     public void test_getEmployeesWithPaging_with_page() {
-        Mockito.when(employeeService.getEmployeesWithPaging(Mockito.anyInt(), Mockito.anyInt()))
-                .thenReturn(Collections.singletonList(employee2));
+        Mockito.when(employeeRepository.findAll(Mockito.any(PageRequest.class)))
+                .thenReturn(new PageImpl<>(Collections.singletonList(employee2)));
         MockMvcResponse response = given().contentType(ContentType.JSON)
                 .param("page", 2)
                 .param("pageSize", 1)
@@ -98,7 +97,7 @@ public class EmployeeControllerTest {
 
     @Test
     public void test_getAllEmployees_without_page() {
-        Mockito.when(employeeService.getAllEmployees()).thenReturn(Arrays.asList(employee1, employee2));
+        Mockito.when(employeeRepository.findAll()).thenReturn(Arrays.asList(employee1, employee2));
         MockMvcResponse response = given().contentType(ContentType.JSON)
                 .when()
                 .get(EMPLOYEES_URL);
@@ -114,7 +113,7 @@ public class EmployeeControllerTest {
     @Test
     public void test_getEmployeeById_when_give_id_return_employee() {
         int targetEmployeeID = 1;
-        Mockito.when(employeeService.findEmployeeByID(Mockito.any(Integer.class))).thenReturn(employee2);
+        Mockito.when(employeeRepository.findById(Mockito.anyInt())).thenReturn(Optional.ofNullable(employee2));
         MockMvcResponse response = given().contentType(ContentType.JSON)
                 .when()
                 .get(EMPLOYEES_URL + "/" + targetEmployeeID);
@@ -130,7 +129,7 @@ public class EmployeeControllerTest {
     public void test_create_employee() {
         Employee newEmployee = new Employee(3, "Cindy", 1, 21, 5000, "Female");
 
-        Mockito.when(employeeService.create(Mockito.any(Employee.class))).thenReturn(newEmployee);
+        Mockito.when(employeeRepository.save(Mockito.any(Employee.class))).thenReturn(newEmployee);
         MockMvcResponse response = given().contentType(ContentType.JSON)
                 .body(newEmployee)
                 .when()
@@ -148,7 +147,8 @@ public class EmployeeControllerTest {
         Employee updatedAlice = new Employee(0, "Alice", 1, 25, 5000, "Female");
         updatedAlice.setCompanyID(1);
 
-        Mockito.when(employeeService.update(Mockito.anyInt(), Mockito.any(Employee.class))).thenReturn(updatedAlice);
+        Mockito.when(employeeRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(updatedAlice));
+        Mockito.when(employeeRepository.save(Mockito.any(Employee.class))).thenReturn(updatedAlice);
         MockMvcResponse response = given().contentType(ContentType.JSON)
                 .body(updatedAlice)
                 .when()
