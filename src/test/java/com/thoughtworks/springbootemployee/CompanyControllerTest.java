@@ -49,10 +49,8 @@ public class CompanyControllerTest {
         CompanyInformationManager manager = CompanyInformationManager.getInstance();
         manager.reset();
 
-        Employee employee1 = new Employee(0, "Alice", 20, "Female");
-        employee1.setCompanyID(1);
-        Employee employee2 = new Employee(1, "Bob", 21, "Male");
-        employee2.setCompanyID(2);
+        Employee employee1 = new Employee(0, "Alice", 1, 20, 5000, "Female");
+        Employee employee2 = new Employee(1, "Bob", 2, 21, 5000, "Male");
 
         Company company1 = new Company();
         company1.setCompanyID(1);

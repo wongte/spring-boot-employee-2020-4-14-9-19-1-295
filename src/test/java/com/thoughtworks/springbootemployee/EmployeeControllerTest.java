@@ -12,7 +12,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -55,10 +54,8 @@ public class EmployeeControllerTest {
         CompanyInformationManager manager = CompanyInformationManager.getInstance();
         manager.reset();
 
-        employee1 = new Employee(0, "Alice", 20, "Female");
-        employee1.setCompanyID(1);
-        employee2 = new Employee(1, "Bob", 21, "Male");
-        employee2.setCompanyID(1);
+        employee1 = new Employee(0, "Alice", 20, 1, 5000, "Female");
+        employee2 = new Employee(1, "Bob", 1, 21, 5000, "Male");
 
         Company company = new Company();
         company.setCompanyID(1);
@@ -131,8 +128,7 @@ public class EmployeeControllerTest {
 
     @Test
     public void test_create_employee() {
-        Employee newEmployee = new Employee(3, "Cindy", 21, "Female");
-        newEmployee.setCompanyID(1);
+        Employee newEmployee = new Employee(3, "Cindy", 1, 21, 5000, "Female");
 
         Mockito.when(employeeService.create(Mockito.any(Employee.class))).thenReturn(newEmployee);
         MockMvcResponse response = given().contentType(ContentType.JSON)
@@ -149,7 +145,7 @@ public class EmployeeControllerTest {
 
     @Test
     public void test_update_employee() {
-        Employee updatedAlice = new Employee(0, "Alice", 25, "Female");
+        Employee updatedAlice = new Employee(0, "Alice", 1, 25, 5000, "Female");
         updatedAlice.setCompanyID(1);
 
         Mockito.when(employeeService.update(Mockito.anyInt(), Mockito.any(Employee.class))).thenReturn(updatedAlice);
