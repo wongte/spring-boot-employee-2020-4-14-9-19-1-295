@@ -4,10 +4,12 @@ import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.Employee;
 import com.thoughtworks.springbootemployee.repository.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CompanyService {
@@ -15,7 +17,7 @@ public class CompanyService {
     CompanyRepository companyRepository;
 
     public List<Company> getCompaniesWithPaging(Integer page, Integer pageSize) {
-        return companyRepository.findAll(page, pageSize);
+        return companyRepository.findAll(PageRequest.of(page, pageSize)).getContent();
     }
 
     public List<Company> getCompanies() {
@@ -23,27 +25,30 @@ public class CompanyService {
     }
 
     public Company getCompanyByID(int companyID) {
-        return companyRepository.findByID(companyID);
+        return companyRepository.findById(companyID).orElse(null);
     }
 
     public List<Employee> getCompanyEmployees(int companyID) {
-        return companyRepository.findEmployees(companyID);
+        Optional<Company> company = companyRepository.findById(companyID);
+        return company.map(Company::getEmployees).orElse(null);
     }
 
     public Company create(Company newCompany) {
-        return companyRepository.add(newCompany);
+        return companyRepository.save(newCompany);
     }
 
     public void removeAllEmployees(int targetCompanyID) {
-        Company company = companyRepository.findByID(targetCompanyID);
+        Company company = companyRepository.findById(targetCompanyID).orElse(null);
+        if (company == null) return ;
         company.setEmployees(new ArrayList<>());
-        companyRepository.update(targetCompanyID, company);
+        companyRepository.save(company);
     }
 
     public Company update(Integer targetCompanyID, Company updatedCompany) {
-        Company company = companyRepository.findByID(targetCompanyID);
+        Company company = companyRepository.findById(targetCompanyID).orElse(null);
+        if (company == null) return null;
         company.setCompanyName(updatedCompany.getCompanyName());
 
-        return companyRepository.update(targetCompanyID, company);
+        return companyRepository.save(company);
     }
 }
