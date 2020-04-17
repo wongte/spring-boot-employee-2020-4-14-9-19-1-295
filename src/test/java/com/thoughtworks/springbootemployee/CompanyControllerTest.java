@@ -4,7 +4,7 @@ import com.thoughtworks.springbootemployee.controller.CompanyController;
 import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.CompanyResponse;
 import com.thoughtworks.springbootemployee.model.Employee;
-import com.thoughtworks.springbootemployee.service.CompanyService;
+import com.thoughtworks.springbootemployee.repository.CompanyRepository;
 import io.restassured.http.ContentType;
 import io.restassured.mapper.TypeRef;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
@@ -18,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.spec.internal.HttpStatus;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.lang.reflect.Type;
@@ -35,7 +37,7 @@ public class CompanyControllerTest {
     private static final String COMPANIES_URL = "companies";
 
     @MockBean
-    private CompanyService companyService;
+    private CompanyRepository companyRepository;
 
     @Autowired
     private CompanyController companyController;
@@ -67,7 +69,7 @@ public class CompanyControllerTest {
 
     @Test
     public void test_get_all_companies_without_page() {
-        Mockito.when(companyService.getCompanies()).thenReturn(defaultCompanies);
+        Mockito.when(companyRepository.findAll()).thenReturn(defaultCompanies);
         MockMvcResponse response = given().contentType(ContentType.JSON)
                 .when()
                 .get(COMPANIES_URL);
@@ -85,7 +87,8 @@ public class CompanyControllerTest {
 
     @Test
     public void test_get_all_companies_with_page() {
-        Mockito.when(companyService.getCompaniesWithPaging(Mockito.anyInt(), Mockito.anyInt())).thenReturn(defaultCompanies.subList(1, 2));
+        Mockito.when(companyRepository.findAll(Mockito.any(PageRequest.class)))
+                .thenReturn(new PageImpl<>(defaultCompanies.subList(1, 2)));
         MockMvcResponse response = given().contentType(ContentType.JSON)
                 .param("page", 2)
                 .param("pageSize", 1)
@@ -106,7 +109,8 @@ public class CompanyControllerTest {
 
     @Test
     public void test_get_company_by_id() {
-        Mockito.when(companyService.getCompanyByID(1)).thenReturn(defaultCompanies.get(0));
+        Mockito.when(companyRepository.findById(Mockito.anyInt()))
+                .thenReturn(java.util.Optional.ofNullable(defaultCompanies.get(0)));
         MockMvcResponse response = given().contentType(ContentType.JSON)
                 .when()
                 .get(COMPANIES_URL + "/" + 1);
@@ -117,7 +121,8 @@ public class CompanyControllerTest {
 
     @Test
     public void test_get_employees_by_company_id() {
-        Mockito.when(companyService.getCompanyEmployees(1)).thenReturn(defaultCompanies.get(0).getEmployees());
+        Mockito.when(companyRepository.findById(Mockito.anyInt()))
+                .thenReturn(java.util.Optional.ofNullable(defaultCompanies.get(0)));
         MockMvcResponse response = given().contentType(ContentType.JSON)
                 .when()
                 .get(COMPANIES_URL + "/" + 1 + "/employees");
@@ -138,7 +143,7 @@ public class CompanyControllerTest {
         Company newCompany = new Company();
         newCompany.setCompanyID(3);
         newCompany.setCompanyName("Company 3");
-        Mockito.when(companyService.create(Mockito.any(Company.class))).thenReturn(newCompany);
+        Mockito.when(companyRepository.save(Mockito.any(Company.class))).thenReturn(newCompany);
         MockMvcResponse response = given().contentType(ContentType.JSON)
                 .body(newCompany)
                 .when()
@@ -155,7 +160,8 @@ public class CompanyControllerTest {
         Company updatedCompany1 = new Company();
         updatedCompany1.setCompanyID(1);
         updatedCompany1.setCompanyName(newCompany1Name);
-        Mockito.when(companyService.update(Mockito.anyInt(), Mockito.any(Company.class))).thenReturn(updatedCompany1);
+        Mockito.when(companyRepository.findById(Mockito.anyInt())).thenReturn(java.util.Optional.of(updatedCompany1));
+        Mockito.when(companyRepository.save(Mockito.any(Company.class))).thenReturn(updatedCompany1);
         MockMvcResponse response = given().contentType(ContentType.JSON)
                 .body(updatedCompany1)
                 .when()
