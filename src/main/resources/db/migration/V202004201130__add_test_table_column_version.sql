@@ -1,0 +1,1 @@
+alter table test_table add version varchar(20) not null
