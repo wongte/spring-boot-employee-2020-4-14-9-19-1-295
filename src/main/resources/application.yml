@@ -1,6 +1,10 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:testdb
+    url: jdbc:h2:~/tw/test
   jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
     hibernate:
       ddl-auto: update
