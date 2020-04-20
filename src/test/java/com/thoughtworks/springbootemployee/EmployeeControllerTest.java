@@ -50,9 +50,6 @@ public class EmployeeControllerTest {
         };
         RestAssuredMockMvc.standaloneSetup(employeeController);
 
-        CompanyInformationManager manager = CompanyInformationManager.getInstance();
-        manager.reset();
-
         employee1 = new Employee(0, "Alice", 20, 1, 5000, "Female");
         employee2 = new Employee(1, "Bob", 1, 21, 5000, "Male");
 
@@ -60,8 +57,6 @@ public class EmployeeControllerTest {
         company.setCompanyID(1);
         company.setCompanyName("Apple");
         company.setEmployees(new ArrayList<>(Arrays.asList(employee1, employee2)));
-
-        manager.setCompanies(Collections.singletonList(company));
     }
 
     @Test

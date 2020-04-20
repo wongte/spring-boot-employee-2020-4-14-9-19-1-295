@@ -48,9 +48,6 @@ public class CompanyControllerTest {
     public void setUp() {
         RestAssuredMockMvc.standaloneSetup(companyController);
 
-        CompanyInformationManager manager = CompanyInformationManager.getInstance();
-        manager.reset();
-
         Employee employee1 = new Employee(0, "Alice", 1, 20, 5000, "Female");
         Employee employee2 = new Employee(1, "Bob", 2, 21, 5000, "Male");
 
