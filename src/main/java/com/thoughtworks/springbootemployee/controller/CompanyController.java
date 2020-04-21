@@ -1,9 +1,11 @@
 package com.thoughtworks.springbootemployee.controller;
 
+import com.thoughtworks.springbootemployee.CompanyModelToResponse;
 import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.CompanyResponse;
 import com.thoughtworks.springbootemployee.model.Employee;
 import com.thoughtworks.springbootemployee.service.CompanyService;
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -19,17 +21,21 @@ public class CompanyController {
 
     @GetMapping(params = {"page", "pageSize"})
     public List<CompanyResponse> getCompaniesWithPaging(@RequestParam Integer page, @RequestParam Integer pageSize) {
-        return companyService.getCompaniesWithPaging(page, pageSize).stream().map(CompanyResponse::new).collect(Collectors.toList());
+        CompanyModelToResponse mapper = Mappers.getMapper(CompanyModelToResponse.class);
+        return companyService.getCompaniesWithPaging(page, pageSize).stream().map(mapper::companyToCompanyResponse).collect(Collectors.toList());
+
     }
 
     @GetMapping
     public List<CompanyResponse> getCompanies() {
-        return companyService.getCompanies().stream().map(CompanyResponse::new).collect(Collectors.toList());
+        CompanyModelToResponse mapper = Mappers.getMapper(CompanyModelToResponse.class);
+        return companyService.getCompanies().stream().map(mapper::companyToCompanyResponse).collect(Collectors.toList());
     }
 
     @GetMapping("/{companyID}")
     public CompanyResponse getCompanyByID(@PathVariable int companyID) {
-        return new CompanyResponse(companyService.getCompanyByID(companyID));
+        CompanyModelToResponse mapper = Mappers.getMapper(CompanyModelToResponse.class);
+        return mapper.companyToCompanyResponse(companyService.getCompanyByID(companyID));
     }
 
     @GetMapping("/{companyID}/employees")
@@ -40,7 +46,8 @@ public class CompanyController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CompanyResponse create(@RequestBody Company newCompany) {
-        return new CompanyResponse(companyService.create(newCompany));
+        CompanyModelToResponse mapper = Mappers.getMapper(CompanyModelToResponse.class);
+        return mapper.companyToCompanyResponse(companyService.create(newCompany));
     }
 
     @DeleteMapping("/{targetCompanyID}")
@@ -52,6 +59,7 @@ public class CompanyController {
     @PutMapping("/{targetCompanyID}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public CompanyResponse update(@PathVariable Integer targetCompanyID, @RequestBody Company updatedCompany) {
-        return new CompanyResponse(companyService.update(targetCompanyID, updatedCompany));
+        CompanyModelToResponse mapper = Mappers.getMapper(CompanyModelToResponse.class);
+        return mapper.companyToCompanyResponse(companyService.update(targetCompanyID, updatedCompany));
     }
 }

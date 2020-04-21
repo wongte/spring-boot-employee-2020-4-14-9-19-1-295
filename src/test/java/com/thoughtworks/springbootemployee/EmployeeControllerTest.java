@@ -54,7 +54,7 @@ public class EmployeeControllerTest {
         employee2 = new Employee(1, "Bob", 1, 21, 5000, "Male");
 
         Company company = new Company();
-        company.setCompanyID(1);
+        company.setId(1);
         company.setCompanyName("Apple");
         company.setEmployees(new ArrayList<>(Arrays.asList(employee1, employee2)));
     }

@@ -1,21 +1,19 @@
 package com.thoughtworks.springbootemployee.model;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @Entity
 public class Company {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int companyID;
+    private Integer id;
     private String companyName;
 
     @OneToMany(targetEntity = Employee.class, fetch = FetchType.EAGER, mappedBy = "companyID")

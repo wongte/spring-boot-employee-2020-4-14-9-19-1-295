@@ -52,12 +52,12 @@ public class CompanyControllerTest {
         Employee employee2 = new Employee(1, "Bob", 2, 21, 5000, "Male");
 
         Company company1 = new Company();
-        company1.setCompanyID(1);
+        company1.setId(1);
         company1.setCompanyName("Company 1");
         company1.setEmployees(Collections.singletonList(employee1));
 
         Company company2 = new Company();
-        company2.setCompanyID(2);
+        company2.setId(2);
         company2.setCompanyName("Company 2");
         company2.setEmployees(Collections.singletonList(employee2));
 
@@ -138,7 +138,7 @@ public class CompanyControllerTest {
     @Test
     public void test_create_company() {
         Company newCompany = new Company();
-        newCompany.setCompanyID(3);
+        newCompany.setId(3);
         newCompany.setCompanyName("Company 3");
         Mockito.when(companyRepository.save(Mockito.any(Company.class))).thenReturn(newCompany);
         MockMvcResponse response = given().contentType(ContentType.JSON)
@@ -155,14 +155,14 @@ public class CompanyControllerTest {
     public void test_update_company() {
         String newCompany1Name = "Company 1 - new";
         Company updatedCompany1 = new Company();
-        updatedCompany1.setCompanyID(1);
+        updatedCompany1.setId(1);
         updatedCompany1.setCompanyName(newCompany1Name);
         Mockito.when(companyRepository.findById(Mockito.anyInt())).thenReturn(java.util.Optional.of(updatedCompany1));
         Mockito.when(companyRepository.save(Mockito.any(Company.class))).thenReturn(updatedCompany1);
         MockMvcResponse response = given().contentType(ContentType.JSON)
                 .body(updatedCompany1)
                 .when()
-                .put(COMPANIES_URL + "/" + updatedCompany1.getCompanyID());
+                .put(COMPANIES_URL + "/" + updatedCompany1.getId());
 
         Assert.assertEquals(HttpStatus.ACCEPTED, response.statusCode());
         CompanyResponse resultCompany = response.getBody().as(CompanyResponse.class);
